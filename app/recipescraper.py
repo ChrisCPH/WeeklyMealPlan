@@ -166,10 +166,10 @@ def print_recipe(recipe):
 if __name__ == "__main__":
     # Test URLs
     test_urls = [
-        #"https://www.allrecipes.com/recipe/222037/tater-tots-r-casserole/",
-        #"https://www.food.com/recipe/chocolate-chip-cookies-25037",
-        "https://www.arla.dk/opskrifter/pisket-smor/",
-        "https://www.bbcgoodfood.com/recipes/easy-chocolate-cake",
+        "https://www.allrecipes.com/recipe/222037/tater-tots-r-casserole/",
+        "https://www.food.com/recipe/chocolate-chip-cookies-25037",
+        #"https://www.arla.dk/opskrifter/pisket-smor/",
+        #"https://www.bbcgoodfood.com/recipes/easy-chocolate-cake",
         #"https://www.simplyrecipes.com/recipes/perfect_guacamole/",
         # Add recipe URLs here
     ]
