@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# SQLite database
+instance/*.db
+
+# Flask instance folder (for config)
+instance/*.py
+
+# Environment variables / config
+.env
+.env.*
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Mac / Linux / Windows system files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Byte-compiled / temp files
+*.pyo
+*.pyd
+*.swp
