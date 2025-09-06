@@ -19,7 +19,7 @@ def init_db(app):
         db.execute('''
             CREATE TABLE IF NOT EXISTS recipe (
                 recipe_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,¨
+                name TEXT NOT NULL,
                 url TEXT NOT NULL,
                 description TEXT,
                 author TEXT,
@@ -27,8 +27,8 @@ def init_db(app):
                 prep_time_minutes INTEGER,
                 cook_time_minutes INTEGER,
                 total_time_minutes INTEGER,
-                rating REAL DEFAULT 0.0,
-                review_count INTEGER DEFAULT 0
+                rating_value REAL DEFAULT 0.0,
+                rating_count INTEGER DEFAULT 0
             )
         ''')
 
@@ -52,6 +52,12 @@ def init_db(app):
                 protein REAL,
                 carbs REAL,
                 fat REAL,
+                saturatedFat REAL,
+                unsaturatedFat REAL,
+                cholesterol REAL,
+                fiber REAL,
+                sodium REAL,
+                sugar REAL,
                 FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id)
             )
         ''')

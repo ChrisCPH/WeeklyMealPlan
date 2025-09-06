@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import re
+import html
 
 def scrape_recipe_jsonld(url):
     try:
@@ -45,23 +46,24 @@ def scrape_recipe_jsonld(url):
 def extract_recipe_data(recipe_json):
     recipe = {}
     
-    recipe['name'] = recipe_json.get('name', 'Unknown Recipe')
-    recipe['description'] = recipe_json.get('description', '')
+    recipe['name'] = clean_text(recipe_json.get('name', 'Unknown Recipe'))
+    recipe['description'] = clean_text(recipe_json.get('description', ''))
     
     author = recipe_json.get('author')
     if author:
         if isinstance(author, dict):
-            recipe['author'] = author.get('name', 'Unknown Author')
+            recipe['author'] = clean_text(author.get('name', 'Unknown Author'))
         elif isinstance(author, list) and author:
-            recipe['author'] = author[0].get('name', 'Unknown Author') if isinstance(author[0], dict) else str(author[0])
+            recipe['author'] = clean_text(author[0].get('name', 'Unknown Author')) if isinstance(author[0], dict) else clean_text(str(author[0]))
         else:
-            recipe['author'] = str(author)
+            recipe['author'] = clean_text(str(author))
     
     recipe['prep_time'] = parse_duration(recipe_json.get('prepTime'))
     recipe['cook_time'] = parse_duration(recipe_json.get('cookTime'))
     recipe['total_time'] = parse_duration(recipe_json.get('totalTime'))
     
-    recipe['servings'] = recipe_json.get('recipeYield') or recipe_json.get('yield')
+    servings = recipe_json.get('recipeYield') or recipe_json.get('yield')
+    recipe['servings'] = parse_servings(servings)
     
     ingredients = recipe_json.get('recipeIngredient', [])
     recipe['ingredients'] = [clean_text(ingredient) for ingredient in ingredients]
@@ -84,6 +86,12 @@ def extract_recipe_data(recipe_json):
             'protein': nutrition.get('proteinContent'),
             'carbs': nutrition.get('carbohydrateContent'),
             'fat': nutrition.get('fatContent'),
+            'saturatedFat': nutrition.get('saturatedFatContent'),
+            'unsaturatedFat': nutrition.get('unsaturatedFatContent'),
+            'cholesterol': nutrition.get('cholesterolContent'),
+            'fiber': nutrition.get('fiberContent'),
+            'sodium': nutrition.get('sodiumContent'),
+            'sugar': nutrition.get('sugarContent')
         }
     
     rating = recipe_json.get('aggregateRating')
@@ -91,8 +99,8 @@ def extract_recipe_data(recipe_json):
         recipe['rating'] = {
             'value': rating.get('ratingValue'),
             'count': rating.get('ratingCount'),
-            'best': rating.get('bestRating'),
-            'worst': rating.get('worstRating')
+            'best': rating.get('bestRating'), # not used currently
+            'worst': rating.get('worstRating') # not used currently
         }
     
     return recipe
@@ -114,7 +122,21 @@ def parse_duration(duration_str):
 def clean_text(text):
     if not text:
         return ""
-    return re.sub(r'\s+', ' ', str(text).strip())
+    text = html.unescape(str(text))
+    return re.sub(r'\s+', ' ', text.strip())
+
+
+def parse_servings(servings):
+    if not servings:
+        return None
+    if isinstance(servings, list):
+        servings = servings[0] if servings else None
+    if isinstance(servings, str):
+        match = re.search(r'\d+', servings)
+        return int(match.group()) if match else None
+    if isinstance(servings, (int, float)):
+        return int(servings)
+    return None
 
 def print_recipe(recipe):
     print(f"Name: {recipe['name']}")
@@ -166,8 +188,8 @@ def print_recipe(recipe):
 if __name__ == "__main__":
     # Test URLs
     test_urls = [
-        "https://www.allrecipes.com/recipe/222037/tater-tots-r-casserole/",
-        "https://www.food.com/recipe/chocolate-chip-cookies-25037",
+        "https://www.allrecipes.com/recipe/24074/alysias-basic-meat-lasagna/",
+        #"https://www.food.com/recipe/chocolate-chip-cookies-25037",
         #"https://www.arla.dk/opskrifter/pisket-smor/",
         #"https://www.bbcgoodfood.com/recipes/easy-chocolate-cake",
         #"https://www.simplyrecipes.com/recipes/perfect_guacamole/",

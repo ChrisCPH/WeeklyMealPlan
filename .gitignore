@@ -9,15 +9,16 @@ venv/
 ENV/
 env/
 
-# SQLite database
+# SQLite database files inside instance/
 instance/*.db
-
-# Flask instance folder (for config)
-instance/*.py
 
 # Environment variables / config
 .env
 .env.*
+
+# Flask instance folder (keep other files except database)
+instance/*.pyc
+instance/__pycache__/
 
 # IDE / Editor files
 .vscode/
