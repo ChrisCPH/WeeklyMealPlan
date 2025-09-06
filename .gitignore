@@ -10,7 +10,7 @@ ENV/
 env/
 
 # SQLite database files inside instance/
-instance/*.db
+app/instance/*.db
 
 # Environment variables / config
 .env
